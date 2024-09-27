@@ -1,6 +1,6 @@
 import { User } from 'src/users/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
-const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 export const hashPass = async (pass: string) => {

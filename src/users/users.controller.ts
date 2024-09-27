@@ -8,16 +8,16 @@ export class UsersController {
 
   @Get()
   findAll() {
-    return this.usersService.users(); // changed to users (method for getting multiple users)
+    return this.usersService.users(); // Fetch all users
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateUser({ where: { id }, data: updateUserDto }); // changed to updateUser
+    return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.deleteUser({ id }); // changed to deleteUser
+    return this.usersService.deleteUser(id); // Delete user by ID
   }
 }

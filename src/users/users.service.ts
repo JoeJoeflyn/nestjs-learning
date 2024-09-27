@@ -1,71 +1,70 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import * as mongoose from 'mongoose';
 import { excludePass, hashPass } from 'src/utils';
-import { User } from './entities/user.entity';
+import { User } from './entities/user.entity'; // Assuming this is your Mongoose model
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject('USER_MODEL') private userModel: mongoose.Model<User>) { }
 
-  isEmailExisted = async (email: string) => {
-    const userEmail = await this.prisma.user.findFirst({
-      where: { email: email },
-    });
-
-    if (userEmail) return true;
-
-    return false;
+  isEmailExisted = async (email: string): Promise<boolean> => {
+    const userEmail = await this.userModel.findOne({ email }).exec();
+    return !!userEmail;
   };
 
-  async findByEmail(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
-    });
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
   async users(): Promise<User[]> {
-    const users = await this.prisma.user.findMany({});
+    const users = await this.userModel.find().lean().exec();
     return excludePass(users);
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
+  async createUser(data: Partial<User>): Promise<Omit<User, 'password'>> {
     const hashedPass = await hashPass(data.password);
     const emailDuplicate = await this.isEmailExisted(data.email);
 
     if (emailDuplicate) {
-      throw new BadRequestException('Email is existed');
+      throw new BadRequestException('Email already exists');
     }
 
     try {
-      const { password, ...rest } = await this.prisma.user.create({
-        data: {
-          ...data,
-          password: hashedPass,
-        },
+      const user = new this.userModel({
+        ...data,
+        password: hashedPass,
       });
+      const savedUser = await user.save();
+      const { password, ...rest } = savedUser.toObject();
       return rest;
     } catch (error) {
       console.error('Error creating user:', error);
+      throw error;
     }
   }
 
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
-    return this.prisma.user.update({
-      data,
-      where,
-    });
+  async updateUser(
+    userId: string,
+    data: Partial<User>,
+  ): Promise<Omit<User, 'password'>> {
+    try {
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(userId, data, { new: true })
+        .exec();
+      const { password, ...rest } = updatedUser.toObject();
+      return rest;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
   }
 
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    });
+  async deleteUser(userId: string): Promise<User> {
+    try {
+      return this.userModel.findByIdAndDelete(userId).exec();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
   }
 }

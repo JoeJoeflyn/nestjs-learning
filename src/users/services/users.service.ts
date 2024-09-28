@@ -1,11 +1,14 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import * as mongoose from 'mongoose';
-import { excludePass, hashPass } from 'src/utils';
-import { User } from './entities/user.entity'; // Assuming this is your Mongoose model
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { hashPass } from 'src/utils';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject('USER_MODEL') private userModel: mongoose.Model<User>) { }
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) { }
 
   isEmailExisted = async (email: string): Promise<boolean> => {
     const userEmail = await this.userModel.findOne({ email }).exec();
@@ -17,8 +20,15 @@ export class UserService {
   }
 
   async users(): Promise<User[]> {
-    const users = await this.userModel.find().lean().exec();
-    return excludePass(users);
+    const users = await this.userModel.find().exec();
+
+    const sanitizedUsers = users.map((user) => {
+      const userObject = user.toObject({ getters: true, virtuals: true });
+      delete userObject.password;
+      return userObject;
+    });
+
+    return sanitizedUsers;
   }
 
   async createUser(data: Partial<User>): Promise<Omit<User, 'password'>> {
@@ -34,9 +44,12 @@ export class UserService {
         ...data,
         password: hashedPass,
       });
+
       const savedUser = await user.save();
-      const { password, ...rest } = savedUser.toObject();
-      return rest;
+      const userObject = savedUser.toObject();
+      delete userObject.password;
+
+      return userObject;
     } catch (error) {
       console.error('Error creating user:', error);
       throw error;
@@ -51,8 +64,10 @@ export class UserService {
       const updatedUser = await this.userModel
         .findByIdAndUpdate(userId, data, { new: true })
         .exec();
-      const { password, ...rest } = updatedUser.toObject();
-      return rest;
+      const user = updatedUser.toObject();
+      delete user.password;
+
+      return user;
     } catch (error) {
       console.error('Error updating user:', error);
       throw error;

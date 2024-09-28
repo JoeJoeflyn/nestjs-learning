@@ -1,4 +1,3 @@
-import { User } from 'src/users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
 const saltRounds = 10;
@@ -10,6 +9,3 @@ export const hashPass = async (pass: string) => {
 export const validatePass = async (pass: string, hashedPass: string) => {
   return await bcrypt.compare(pass, hashedPass);
 };
-
-export const excludePass = (data: User[]) =>
-  data.map(({ password, ...rest }) => rest);

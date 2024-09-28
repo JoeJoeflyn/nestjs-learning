@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/users/users.service';
+import { UserService } from 'src/users/services';
 import { validatePass } from 'src/utils';
 
 @Injectable()
@@ -30,7 +30,8 @@ export class AuthService {
     const user = await this.usersService.createUser({
       email: userInfo.email,
       password: userInfo.password,
-      name: userInfo.name,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
     });
 
     return user;

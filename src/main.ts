@@ -14,11 +14,11 @@ async function bootstrap() {
     .setTitle('Learning Nest')
     .setDescription('The Learning Nest API description')
     .setVersion('1.0')
-    .addTag('learning-nest')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/doku', app, document);
 
   const port = process.env.PORT || 8081;
 

@@ -1,11 +1,3 @@
-import { Module } from '@nestjs/common';
-<<<<<<< Updated upstream
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
-@Module({
-  imports: [],
-=======
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
@@ -45,8 +37,13 @@ import { CacheModule } from '@nestjs/cache-manager';
     UsersModule,
     AuthModule,
   ],
->>>>>>> Stashed changes
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule { }

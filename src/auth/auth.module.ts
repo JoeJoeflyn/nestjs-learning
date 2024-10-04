@@ -10,6 +10,9 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     UsersModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -26,4 +29,4 @@ import { JwtStrategy } from './jwt/jwt.strategy';
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
 })
-export class AuthModule { }
+export class AuthModule {}

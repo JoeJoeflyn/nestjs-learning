@@ -1,3 +1,4 @@
+import { CacheTTL } from '@nestjs/cache-manager';
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from '../dto';
@@ -7,11 +8,12 @@ import { UserService } from '../services';
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly usersService: UserService) { }
 
   @Get()
+  @CacheTTL(20)
   findAll() {
-    return this.usersService.users(); // Fetch all users
+    return this.usersService.users();
   }
 
   @Patch(':id')

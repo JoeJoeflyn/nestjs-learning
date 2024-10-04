@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [

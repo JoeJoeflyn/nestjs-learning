@@ -5,3 +5,14 @@ export class User {
   firstName?: string;
   lastName?: string;
 }
+
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
+export enum AccountType {
+  GOOGLE = 'google',
+  APPLE = 'apple',
+  LOCAL = 'local'
+}

@@ -1,4 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { AccountType, UserRole } from '../entities/user.entity';
+import { enumToArray } from 'src/utils';
 
 @Schema({
   timestamps: true,
@@ -15,14 +17,40 @@ export class User {
   })
   email: string;
 
+  @Prop({ select: false })
+  password: string;
+
+  @Prop()
+  confirmationCode: number;
+
+  @Prop()
+  codeExpired: Date;
+
+  @Prop({ enum: enumToArray(AccountType), default: AccountType.LOCAL })
+  accountType: string;
+
+  @Prop()
+  phone: string;
+
+  @Prop({
+    type: String, enum: enumToArray(UserRole), default: UserRole.USER
+  })
+  role: string;
+
+  @Prop()
+  isBanned: boolean;
+
+  @Prop()
+  location: string;
+
+  @Prop()
+  avatar: string;
+
   @Prop()
   firstName: string;
 
   @Prop()
   lastName: string;
-
-  @Prop()
-  password: string;
 }
 
 const schema = SchemaFactory.createForClass(User);

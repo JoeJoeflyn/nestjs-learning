@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { AccountType, UserRole } from '../entities/user.entity';
+import { Types } from 'mongoose';
+import { Feedback } from 'src/stores/schema/feedback.schema';
+import { Store } from 'src/stores/schema/store.schema';
 import { enumToArray } from 'src/utils';
+import { AccountType, UserRole } from '../entities/user.entity';
 
 @Schema({
   timestamps: true,
@@ -51,6 +54,12 @@ export class User {
 
   @Prop()
   lastName: string;
+
+  @Prop({ type: Types.ObjectId, ref: Store.name })
+  storeId: string;
+
+  @Prop({ type: [Types.ObjectId], ref: Feedback.name })
+  feedbackId: string[];
 }
 
 const schema = SchemaFactory.createForClass(User);

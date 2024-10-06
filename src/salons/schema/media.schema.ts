@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { Store } from './store.schema';
+import { Salon } from './salon.schema';
 
 @Schema()
 export class Media {
@@ -10,8 +10,8 @@ export class Media {
   @Prop({ type: [String], default: [] })
   videos: string[];
 
-  @Prop({ type: Types.ObjectId, ref: Store.name })
-  storeId: string;
+  @Prop({ type: Types.ObjectId, ref: Salon.name })
+  salonId: string;
 }
 
 export const MediaSchema = SchemaFactory.createForClass(Media);

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { Feedback } from 'src/stores/schema/feedback.schema';
-import { Store } from 'src/stores/schema/store.schema';
+import { Feedback } from 'src/salons/schema/feedback.schema';
+import { Salon } from 'src/salons/schema/salon.schema';
 import { enumToArray } from 'src/utils';
 import { AccountType, UserRole } from '../entities/user.entity';
 
@@ -55,7 +55,13 @@ export class User {
   @Prop()
   lastName: string;
 
-  @Prop({ type: Types.ObjectId, ref: Store.name })
+  @Prop()
+  fingerprint: string;
+
+  @Prop()
+  faceId: string;
+
+  @Prop({ type: Types.ObjectId, ref: Salon.name })
   storeId: string;
 
   @Prop({ type: [Types.ObjectId], ref: Feedback.name })

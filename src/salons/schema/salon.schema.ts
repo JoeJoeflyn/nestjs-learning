@@ -1,18 +1,22 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, raw, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
 import { User } from "src/users/schema";
 import { DaysOfWeek, OpeningHours } from "../entities/store.schema";
 import { Feedback } from "./feedback.schema";
 import { Media } from "./media.schema";
+import { Location, LocationSchema } from "./location.schema";
 
-export class Store {
+export class Salon {
   @Prop({
     required: true,
   })
   salonName: string;
 
+  @Prop({ type: [LocationSchema], default: [] })
+  location: Location[];
+
   @Prop()
-  location: string;
+  phone: string;
 
   @Prop()
   coverImage: string;
@@ -36,5 +40,5 @@ export class Store {
   userId: string;
 }
 
-const schema = SchemaFactory.createForClass(Store);
-export const StoreSchema = schema;
+const schema = SchemaFactory.createForClass(Salon);
+export const SalonSchema = schema;

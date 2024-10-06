@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { Types } from "mongoose";
 import { User } from "src/users/schema";
-import { Store } from "./store.schema";
+import { Salon } from "./salon.schema";
 
 @Schema()
 export class Feedback {
@@ -15,8 +15,8 @@ export class Feedback {
   @Prop({ type: Types.ObjectId, ref: User.name })
   userId: string;
 
-  @Prop({ type: Types.ObjectId, ref: Store.name })
-  storeId: string;
+  @Prop({ type: Types.ObjectId, ref: Salon.name })
+  salonId: string;
 }
 
 export const FeedbackSchema = SchemaFactory.createForClass(Feedback);

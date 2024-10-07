@@ -1,10 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
-import { User } from 'src/users/schema';
 
 @Schema()
 export class Location {
-  @Prop({ type: String })
+  @Prop()
   address: string;
 
   @Prop({

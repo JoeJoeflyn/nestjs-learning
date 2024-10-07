@@ -1,10 +1,9 @@
-import { Prop, raw, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
-import { User } from "src/users/schema";
-import { DaysOfWeek, OpeningHours } from "../entities/store.schema";
+import { DaysOfWeek, OpeningHours } from "../entities/salon.schema";
 import { Feedback } from "./feedback.schema";
-import { Media } from "./media.schema";
 import { Location, LocationSchema } from "./location.schema";
+import { Media } from "./media.schema";
 
 export class Salon {
   @Prop({
@@ -35,9 +34,6 @@ export class Salon {
 
   @Prop({ type: Types.ObjectId, ref: Media.name })
   mediaId: string[];
-
-  @Prop({ type: Types.ObjectId, ref: User.name })
-  userId: string;
 }
 
 const schema = SchemaFactory.createForClass(Salon);
